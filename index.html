@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Password Checker</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .progress-bar {
+            height: 20px;
+            overflow: hidden;
+        }
+        
+        ul.checklist {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        ul.checklist li:before {
+            content: "\2714";
+            margin-right: 5px;
+            color: green;
+            opacity: 0;
+        }
+        
+        ul.checklist li.false:before {
+            content: "\2718";
+            color: red;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-3">Password Checker</h2>
+        <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <div class="input-group">
+                    <input type="password" id="password" name="password" class="form-control" onkeyup="checkPasswordStrength(this.value)">
+                    <div class="input-group-append">
+                        <button type="button" id="password-visibility-toggle" class="btn btn-outline-secondary" onclick="togglePasswordVisibility()">Show</button>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Check</button>
+        </form>
+        <div class="progress mt-3">
+            <div id="progress" class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        
+        <p id="progress-text" class="mt-2"></p>
+        
+        <ul class="checklist">
+            <li id="length-check" class="checklist-item false">Password harus lebih dari 12 karakter</li>
+            <li id="lowercase-check" class="checklist-item false">Password harus memiliki huruf kecil</li>
+            <li id="uppercase-check" class="checklist-item false">Password harus memiliki huruf besar</li>
+            <li id="number-check" class="checklist-item false">Password harus memiliki angka</li>
+            <li id="special-char-check" class="checklist-item false">Password harus memiliki karakter spesial</li>
+        </ul>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function checkPasswordStrength(password) {
+            var length = password.length;
+            var progressElement = document.getElementById("progress");
+            var progressText = document.getElementById("progress-text");
+            var strength = 0;
+
+            // Memeriksa panjang password
+            if (length >= 12) {
+                strength += 20;
+                document.getElementById("length-check").classList.remove("false");
+                document
+                .getElementById("length-check").classList.add("true");
+                } else {
+                document.getElementById("length-check").classList.remove("true");
+                document.getElementById("length-check").classList.add("false");
+                }
+                        // Memeriksa huruf kecil
+        if (/[a-z]/.test(password)) {
+            strength += 20;
+            document.getElementById("lowercase-check").classList.remove("false");
+            document.getElementById("lowercase-check").classList.add("true");
+        } else {
+            document.getElementById("lowercase-check").classList.remove("true");
+            document.getElementById("lowercase-check").classList.add("false");
+        }
+
+        // Memeriksa huruf besar
+        if (/[A-Z]/.test(password)) {
+            strength += 20;
+            document.getElementById("uppercase-check").classList.remove("false");
+            document.getElementById("uppercase-check").classList.add("true");
+        } else {
+            document.getElementById("uppercase-check").classList.remove("true");
+            document.getElementById("uppercase-check").classList.add("false");
+        }
+
+        // Memeriksa angka
+        if (/[0-9]/.test(password)) {
+            strength += 20;
+            document.getElementById("number-check").classList.remove("false");
+            document.getElementById("number-check").classList.add("true");
+        } else {
+            document.getElementById("number-check").classList.remove("true");
+            document.getElementById("number-check").classList.add("false");
+        }
+
+        // Memeriksa karakter spesial
+        if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+            strength += 20;
+            document.getElementById("special-char-check").classList.remove("false");
+            document.getElementById("special-char-check").classList.add("true");
+        } else {
+            document.getElementById("special-char-check").classList.remove("true");
+            document.getElementById("special-char-check").classList.add("false");
+        }
+
+        strength = Math.min(strength, 100); // Batasi nilai ke 100
+
+        progressElement.style.width = strength + "%";
+        progressText.innerText = strength + "%";
+    }
+
+    function togglePasswordVisibility() {
+        var passwordInput = document.getElementById("password");
+        var passwordToggleBtn = document.getElementById("password-visibility-toggle");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            passwordToggleBtn.textContent = "Hide";
+        } else {
+            passwordInput.type = "password";
+            passwordToggleBtn.textContent = "Show";
+        }
+    }
+</script>
+</body>
+</html>
